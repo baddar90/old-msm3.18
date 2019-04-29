@@ -134,17 +134,8 @@ static struct v4l2_ctrl **get_super_cluster(struct msm_vidc_inst *inst,
 	struct v4l2_ctrl **cluster = kmalloc(sizeof(struct v4l2_ctrl *) *
 			num_ctrls, GFP_KERNEL);
 
-	/*
-	* Fixed CWE-404, Resource leak(RESOURCE_LEAK), checked by Coverity
-	*/
-	if (!cluster) {
+	if (!cluster || !inst)
 		return NULL;
-	}
-
-	if (!inst) {
-		kfree(cluster);
-		return NULL;
-	}
 
 	for (c = 0; c < num_ctrls; c++)
 		cluster[c] =  inst->ctrls[c];

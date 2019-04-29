@@ -1,5 +1,4 @@
 ccflags-$(CONFIG_POWER_SUPPLY_DEBUG) := -DDEBUG
-ccflags-$(CONFIG_BOARD_AILSA_II) := -DZTE_AILSA_II_VR
 
 power_supply-y				:= power_supply_core.o
 power_supply-$(CONFIG_SYSFS)		+= power_supply_sysfs.o
@@ -84,5 +83,3 @@ obj-$(CONFIG_MSM_BCL_CTL)	+= msm_bcl.o
 obj-$(CONFIG_MSM_BCL_PERIPHERAL_CTL) += bcl_peripheral.o
 obj-$(CONFIG_POWER_RESET)	+= reset/
 obj-$(CONFIG_ARCH_MSM)		+= qcom/
-obj-$(CONFIG_ZTE_HALL_AVAILABLE) += zte-hall.o
-obj-y += zte_misc.o

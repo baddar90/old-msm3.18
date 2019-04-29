@@ -57,16 +57,6 @@ struct gpio_keys_drvdata {
 static struct device *global_dev;
 static struct syscore_ops gpio_keys_syscore_pm_ops;
 
-static struct timer_list zte_volume_timer;
-int zte_volume_key=0;
-
-static void volume_key_timer(unsigned long data)
-{
-	zte_volume_key=1;
-	pr_info("volume_key_timer,zte_volume_key=1\n");
-}
-
-
 static void gpio_keys_syscore_resume(void);
 
 /*
@@ -347,7 +337,7 @@ static void gpio_keys_gpio_report_event(struct gpio_button_data *bdata)
 	const struct gpio_keys_button *button = bdata->button;
 	struct input_dev *input = bdata->input;
 	unsigned int type = button->type ?: EV_KEY;
-	int state,key_value=0;
+	int state;
 
 	state = (__gpio_get_value(button->gpio) ? 1 : 0) ^ button->active_low;
 
@@ -355,26 +345,7 @@ static void gpio_keys_gpio_report_event(struct gpio_button_data *bdata)
 		if (state)
 			input_event(input, type, button->code, button->value);
 	} else {
-			input_event(input, type, button->code, !!state);
-#if 1
-        //volume_up=115
-		if(button->code==115)
-		{
-           key_value=!!state;
-		   if(key_value==1)
-		   { 
-		   	  zte_volume_timer.expires = jiffies + 8 * HZ;
-              mod_timer(&zte_volume_timer,zte_volume_timer.expires);
-		   	}
-		    else
-		    {
-		      del_timer(&zte_volume_timer);
-              zte_volume_key=0;    
-		    }
-
-		}
-		pr_info("zte code=%d,value=%d\n",button->code,key_value);
-#endif		
+		input_event(input, type, button->code, !!state);
 	}
 	input_sync(input);
 }
@@ -841,12 +812,6 @@ static int gpio_keys_probe(struct platform_device *pdev)
 		if (button->wakeup)
 			wakeup = 1;
 	}
-
-#if 1
-    init_timer(&zte_volume_timer);
-	zte_volume_timer.data = (unsigned long)ddata;
-	zte_volume_timer.function = volume_key_timer;
-#endif
 
 	error = sysfs_create_group(&pdev->dev.kobj, &gpio_keys_attr_group);
 	if (error) {

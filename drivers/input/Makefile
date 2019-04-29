@@ -29,4 +29,3 @@ obj-$(CONFIG_INPUT_KEYRESET)	+= keyreset.o
 obj-$(CONFIG_INPUT_KEYCOMBO)	+= keycombo.o
 obj-$(CONFIG_SENSORS_HALL)	+= hall_sensor.o
 obj-y	+= sensors/smi130/
-obj-$(CONFIG_FINGERPRINT_GOODIX_GF3118M) += fingerprint/goodix/
